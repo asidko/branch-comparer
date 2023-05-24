@@ -9,6 +9,17 @@
 
 const githubApi = require('./github_api');
 
+const express = require('express');
+
+const app = express();
+const port = 3000;
+
+app.use('/api/branch', require('./branch_api'));
+app.listen(port, () => {
+    console.log(`⚡️REST app is listening at http://localhost:${port}`);
+    demo();
+});
+
 async function demo() {
     console.log("We're going to get info about some public repositories for demo purposes\n");
     let repoName, repoOwner, repoBranch, repoBaseBranch;
@@ -18,6 +29,7 @@ async function demo() {
     repoOwner = 'asidko';
     repoBranch = 'master';
     console.log("Repository: " + repoName + " of user/company: " + repoName);
+    console.log(`curl -X GET http://localhost:${port}/api/branch/info?url=https://github.com/${repoOwner}/${repoName}.git&branch=${repoBranch}`)
     await githubApi.getBranchInfo(repoOwner, repoName, repoBranch).then(console.log);
 
     console.log("\nExample 2")
@@ -26,7 +38,7 @@ async function demo() {
     repoBranch = 'master';
     repoBaseBranch = 'dev';
     console.log(`Branch diff compare: '${repoBranch}' to '${repoBaseBranch}' in repository: ${repoName} of user/company: ${repoOwner}`);
+    console.log(`curl -X GET http://localhost:${port}/api/branch/compare?url=https://github.com/${repoOwner}/${repoName}.git&branch=${repoBranch}&baseBranch=${repoBaseBranch}`)
     await githubApi.compareBranches(repoOwner, repoName, repoBaseBranch, repoBranch).then(console.log);
 }
 
-demo();

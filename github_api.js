@@ -85,6 +85,7 @@ const githubApi = {
      * @return {Promise<{lastCommitSha: string, lastCommitMessage: string, branchName: string, status: string}>}
      */
     async getBranchInfo(owner, repo, branch) {
+        console.log('Github API. Getting branch info for %s/%s/%s', owner, repo, branch)
         return octokit.repos.getBranch({owner, repo, branch})
             .then(({data}) => githubApiMapper.mapGetBranchResponse(data))
             .catch(e => {
@@ -119,6 +120,7 @@ const githubApi = {
      * @return {Promise<{status: string, branchStatus: string, branchName: string, baseBranchName: string, behindCommitCount: number, aheadCommitCount: number}>}
      */
     async compareBranches(owner, repo, base_branch, head_branch) {
+        console.log('Github API. Comparing branches %s/%s/%s/%s', owner, repo, base_branch, head_branch)
         return octokit.repos.compareCommits({owner, repo, base: base_branch, head: head_branch})
             // Get only the data we need
             .then(({data}) => ({
