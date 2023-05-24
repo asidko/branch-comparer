@@ -133,6 +133,15 @@ const githubApi = {
             }))
             // Map the response to our own format
             .then(responseData => githubApiMapper.mapCompareCommitsResponse(responseData, head_branch, base_branch))
+            .catch(e => {
+                if (e.status === 404) {
+                    console.error('Repository %s or branch %s not found', repo, base_branch);
+                    return {status: REQUEST_STATUS.NOT_FOUND, branchName: head_branch, baseBranchName: base_branch}
+                } else {
+                    console.error('Unexpected error', e);
+                    return {status: REQUEST_STATUS.ERROR, branchName: head_branch, baseBranchName: base_branch};
+                }
+            })
     }
 }
 
