@@ -11,7 +11,38 @@ dev -> qa -> demo -> master
 You can use this script to compare `dev` with `qa` or `qa` with `demo` for all you repositories
 to find out whether you need to update the specific environment, or changes have already been merged by someone.
 
-## Examples of raw wrapper usage
+## Getting started
+
+To use this script for private repositories you need to provide a GitHub token.
+
+You can generate a new token here: https://github.com/settings/tokens?type=beta
+Set: `Repository access` to `All repositories`  
+Set: `Permissions -> Repository permissions -> Contents` to `Read-only`
+
+## Usage
+
+To quickly test the project, try ready-to-use docker image:
+```bash
+docker run 
+```
+
+You can find `curl` test queries below.
+
+## Build
+
+Build the docker image and run it
+```bash
+docker build -t branch-comparer .
+docker run -e GITHUB_TOKEN=<your_token> -p 3000:3000 branch-comparer
+```
+
+Using sources
+```bash
+npm install
+node index.js --token <your_token>
+```
+
+## Examples
 
 ### Request to get branch info
 

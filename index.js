@@ -12,7 +12,7 @@ const githubApi = require('./github_api');
 const express = require('express');
 
 const app = express();
-const port = 3000;
+const port = Number(process.env.port || 3000);
 
 app.use('/api/branch', require('./branch_api'));
 app.listen(port, () => {
