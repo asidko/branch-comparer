@@ -9,7 +9,7 @@ For example, you have this git branch merging flow:
 dev -> qa -> demo -> master
 ```
 You can use this script to compare `dev` with `qa` or `qa` with `demo` for all you repositories
-to find out, do you need to update the specific environment, or changes already there.
+to find out whether you need to update the specific environment, or changes have already been merged by someone.
 
 ## Examples of raw wrapper usage
 
@@ -22,6 +22,10 @@ const repoOwner = 'asidko';
 const repoBranch = 'master';
 
 githubApi.getBranchInfo(repoOwner, repoName, repoBranch).then(console.log);
+```
+or use REST API
+```bash
+ curl http://localhost:3000/api/branch/info?url=https://github.com/asidko/spring-tcp-messaging-example.git&branch=master
 ```
 
 Result:
@@ -37,7 +41,7 @@ Now we know the latest commit hash and name in the selected branch.
 
 ### Request to get branch info
 
-Call
+SDK
 ```js
 const repoName = 'TelegramBots';
 const repoOwner = 'rubenlagus';
@@ -46,7 +50,10 @@ const repoBaseBranch = 'dev'; // base branch to compare with
 
 githubApi.compareBranches(repoOwner, repoName, repoBaseBranch, repoBranch).then(console.log);
 ```
-
+or use REST API
+```bash
+curl http://localhost:3000/api/branch/compare?url=https://github.com/rubenlagus/TelegramBots.git&branch=master&baseBranch=dev
+```
 Result:
 ```js
 {
