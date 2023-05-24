@@ -23,7 +23,7 @@ Set: `Permissions -> Repository permissions -> Contents` to `Read-only`
 
 To quickly test the project, try ready-to-use docker [image](https://hub.docker.com/repository/docker/windranger/branch-comparer):
 ```bash
-docker run -e GITHUB_TOKEN=<your_token> -p 3000:3000  windranger/branch-comparer:v2.0.0
+docker run -e GITHUB_TOKEN=<your_token> -p 3000:3000  windranger/branch-comparer:v2.0.1
 ```
 
 You can find `curl` test queries below.
