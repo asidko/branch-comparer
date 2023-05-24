@@ -1,8 +1,15 @@
 # Branch comparer
 
 This repo provides a simple script to compare two branches of a git repository.  
-It can be helpful in microservice architecture, where you have a lot of repositories,
+It can be helpful in a microservice architecture, where you have a lot of repositories,
 and you want to know which of them are outdated.
+
+For example, you have this git branch merging flow:
+```text
+dev -> qa -> demo -> master
+```
+You can use this script to compare `dev` with `qa` or `qa` with `demo` for all you repositories
+to find out, do you need to update the specific environment, or changes already there.
 
 ## Examples of raw wrapper usage
 
