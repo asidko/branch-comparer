@@ -4,18 +4,18 @@ This repo provides a simple script to compare two branches of a git repository.
 It can be helpful in a microservice architecture, where you have a lot of repositories,
 and you want to know which of them are outdated.
 
-For example, you have this git branch merging flow:
+For example, you have such branches in each of your repositories, that represent your release flow:
 ```text
-dev -> qa -> demo -> master
+dev -> test -> master
 ```
-You can use this script to compare `dev` with `qa` or `qa` with `demo` for all you repositories
-to find out whether you need to update the specific environment, or changes have already been merged by someone.
+You can use this script to compare branches: `dev` with `test` or `test` with `master` for all you repositories
+to find out whether you need to update the specific environment or it's already up-to-date.
 
 Here is an example how I use it in combination with Google Sheets (calls this API from there)
 ![Calling branch comparer from Google Sheets](https://github.com/asidko/locins/assets/22843881/24f640aa-fadc-42c4-a0ae-6ad58b0ec923)
 ## Getting started
 
-To use this script for private repositories you need to provide a GitHub token.
+To be able to access private repositories you need to provide a GitHub token.
 
 You can generate a new token here: https://github.com/settings/tokens?type=beta  
 Set: `Repository access` to `All repositories`  
