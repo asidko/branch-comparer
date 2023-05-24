@@ -15,15 +15,15 @@ to find out whether you need to update the specific environment, or changes have
 
 To use this script for private repositories you need to provide a GitHub token.
 
-You can generate a new token here: https://github.com/settings/tokens?type=beta
+You can generate a new token here: https://github.com/settings/tokens?type=beta  
 Set: `Repository access` to `All repositories`  
 Set: `Permissions -> Repository permissions -> Contents` to `Read-only`
 
 ## Usage
 
-To quickly test the project, try ready-to-use docker image:
+To quickly test the project, try ready-to-use docker [image](https://hub.docker.com/repository/docker/windranger/branch-comparer):
 ```bash
-docker run 
+docker run -e GITHUB_TOKEN=<your_token> -p 3000:3000  windranger/branch-comparer:v2.0.0
 ```
 
 You can find `curl` test queries below.
