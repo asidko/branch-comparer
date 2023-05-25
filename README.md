@@ -73,7 +73,7 @@ Result:
 ```
 Now we know the latest commit hash and name in the selected branch.
 
-### Request to get branch info
+### Request to compare two branches
 
 SDK
 ```js
