@@ -39,12 +39,25 @@ const githubApiMapper = {
             status: REQUEST_STATUS.OK,
             branchName: branchName,
             baseBranchName: baseBranchName,
-            branchStatus: this.mapBranchStatus(responseData.status),
+            branchStatus: this._mapBranchStatus(responseData.status),
             behindCommitCount: responseData.behind_by,
             aheadCommitCount: responseData.ahead_by
         })
     },
-    mapBranchStatus(githubStatus) {
+    _mapCreatePullRequestResponse(responseData) {
+        return ({
+            branchName: responseData.head.ref,
+            baseBranchName: responseData.base.ref,
+            commitCount: responseData.commits,
+            pullRequestNumber: responseData.number
+        })
+    },
+    _mapMergeBranchesResponse(responseData) {
+        return ({
+            merged: responseData.merged
+        })
+    },
+    _mapBranchStatus(githubStatus) {
         switch (githubStatus) {
             case 'identical':
                 return BRANCH_STATUS.EQUAL;
@@ -106,9 +119,9 @@ const githubApi = {
      * ```
      * {
      *   status: 'OK',
-     *   branchName: 'master',
-     *   baseBranchName: 'dev',
-     *   branchStatus: 'BEHIND', // EQUAL, AHEAD, BEHIND
+     *   branchName: 'dev',
+     *   baseBranchName: 'master',
+     *   branchStatus: 'AHEAD', // EQUAL, AHEAD, BEHIND
      *   behindCommitCount: 3,   // number of commits behind base branch
      *   aheadCommitCount: 0     // number of commits ahead of base branch
      * }
@@ -142,6 +155,70 @@ const githubApi = {
                     return {status: REQUEST_STATUS.ERROR, branchName: head_branch, baseBranchName: base_branch};
                 }
             })
+    },
+
+    /**
+     * Merge two branches
+     *
+     * Example response:
+     * ```
+     * {
+     *   status: 'OK,
+     *   branchName: 'dev',
+     *   baseBranchName: 'master',
+     *   commitCount: 3
+     * }
+     * ```
+     * @param owner github user or organization where the repo is located (e.g. MyCompany)
+     * @param repo repository name (e.g. auth-service)
+     * @param base_branch branch where the changes will be merged (e.g. master)
+     * @param head_branch branch to merge (e.g. dev)
+     * @return {Promise<{status: string, baseBranchName: string, branchName: string, commitCount: number,}>}
+     */
+    async mergeBranches(owner, repo, base_branch, head_branch) {
+        console.log('Github API. Merge branches %s/%s/%s/%s', owner, repo, base_branch, head_branch)
+
+        async function createPullRequest() {
+            console.log('Creating pull request to merge %s into %s', head_branch, base_branch)
+
+            const title = `Merge ${head_branch} into ${base_branch}`;
+            return octokit.pulls.create({owner, repo, title, head: head_branch, base: base_branch})
+                .then(({data}) => githubApiMapper._mapCreatePullRequestResponse(data))
+                .catch(e => {
+                    if (e.status === 422) console.error('Pull request was not created. Possible conflicts or not found branches.');
+                    else console.error('Unexpected error', e);
+                    throw e;
+                })
+        }
+
+        async function mergePullRequest(pullRequestNumber) {
+            console.log('Merging pull request #%s', pullRequestNumber)
+
+            return octokit.pulls.merge({owner, repo, pull_number: pullRequestNumber})
+                .then(({data}) => githubApiMapper._mapMergeBranchesResponse(data))
+                .catch(e => {
+                    if (e.status === 405) console.error('Pull request #%s cannot be merged. Possible conflicts.', pullRequestNumber);
+                    else console.error('Unexpected error', e);
+                    throw e;
+                })
+        }
+
+        return createPullRequest()
+            .then(async pullRequest => {
+                const merged = await mergePullRequest(pullRequest.pullRequestNumber);
+                return {
+                    status: merged ? REQUEST_STATUS.OK : REQUEST_STATUS.ERROR,
+                    branchName: head_branch,
+                    baseBranchName: base_branch,
+                    commitCount: pullRequest.commitCount
+                }
+            })
+            .catch(() => ({
+                status: REQUEST_STATUS.ERROR,
+                branchName: head_branch,
+                baseBranchName: base_branch,
+                commitCount: 0
+            }))
     }
 }
 
