@@ -12,8 +12,7 @@ You can use this script to compare branches: `dev` with `test` or `test` with `m
 to find out whether you need to update the specific environment or it's already up-to-date.
 
 Here is an example how I use it in combination with Google Sheets (calls this API from there)
-![Calling branch comparer from Google Sheets](https://github.com/asidko/branch-comparer/assets/22843881/e8a1d306-c307-4cce-a20c-3a45f29c1cc6)
-
+![Calling branch comparer from Google Sheets](https://github.com/asidko/locins/assets/22843881/24f640aa-fadc-42c4-a0ae-6ad58b0ec923)
 ## Getting started
 
 To be able to access private repositories you need to provide a GitHub token.
@@ -47,56 +46,59 @@ node index.js --token <your_token>
 
 ## Examples
 
-### Request to get branch info
+### Get branch info
 
-Call
-```js
-const repoName = 'spring-tcp-messaging-example';
-const repoOwner = 'asidko';
-const repoBranch = 'master';
+Request to get info for branch `master`
 
-githubApi.getBranchInfo(repoOwner, repoName, repoBranch).then(console.log);
-```
-or use REST API
 ```bash
  curl http://localhost:3000/api/branch/info?url=https://github.com/asidko/spring-tcp-messaging-example.git&branch=master
 ```
 
 Result:
-```js
+```json
 {
-    status: 'OK',
-    branchName: 'master',
-    lastCommitSha: 'a2415c4f09d2894b0e14f47131973ec5e6e5e3f3',
-    lastCommitMessage: 'Init commit'
+  "status": "OK",
+  "branchName": "master",
+  "lastCommitSha": "a2415c4f09d2894b0e14f47131973ec5e6e5e3f3",
+  "lastCommitMessage": "Init commit"
 }
 ```
 Now we know the latest commit hash and name in the selected branch.
 
-### Request to compare two branches
+### Compare branches
 
-SDK
-```js
-const repoName = 'TelegramBots';
-const repoOwner = 'rubenlagus';
-const repoBranch = 'master';  // branch we want to compare
-const repoBaseBranch = 'dev'; // base branch to compare with
+Request to compare `dev` with `master` branch to know how much `dev` is behind or ahead of `master`
 
-githubApi.compareBranches(repoOwner, repoName, repoBaseBranch, repoBranch).then(console.log);
-```
-or use REST API
 ```bash
-curl http://localhost:3000/api/branch/compare?url=https://github.com/rubenlagus/TelegramBots.git&branch=master&baseBranch=dev
+curl http://localhost:3000/api/branch/compare?url=https://github.com/rubenlagus/TelegramBots.git&branch=dev&baseBranch=master
 ```
 Result:
-```js
+```json
 {
-    status: 'OK',
-    branchName: 'master',
-    baseBranchName: 'dev',
-    branchStatus: 'AHEAD',
-    behindCommitCount: 0,
-    aheadCommitCount: 2
+   "status": "OK",
+   "branchName": "dev",
+   "baseBranchName": "master",
+   "branchStatus": "AHEAD",
+   "behindCommitCount": 0,
+   "aheadCommitCount": 3
 }
 ```
-We can tell from the result that the `master` is more recent than `dev` by 2 commits, this means if we want to make them equal, we should update `dev` merging `master` into it.
+We can tell from the result that the `dev` is more recent than `master` and ahead of it commits with 3 commits, this means if we want to make them equal, we should update `master` merging `dev` into it.
+
+### Merge branches
+
+Request to merge `dev` into `master` branch
+
+```bash
+curl -X POST http://localhost:3000/api/branch/merge?url=https://github.com/asidko/spring-tcp-messaging-example.git&branch=dev&baseBranch=master
+```
+
+Result:
+```json
+{
+   "status": "OK",
+   "branchName": "dev",
+   "baseBranchName": "master",
+   "commitCount": 3
+}
+```
