@@ -19,7 +19,7 @@ router.get('/compare', async (req, res) => {
     const branchName = req.query.branch;
     const baseBranchName = req.query.baseBranch;
     const {repoOwner, repoName} = getOwnerAndRepoFromUrl(repoUrl);
-    const branchCompareResult = await githubApi.compareBranches(repoOwner, repoName, branchName, baseBranchName);
+    const branchCompareResult = await githubApi.compareBranches(repoOwner, repoName, baseBranchName, branchName);
     res.json(branchCompareResult);
 });
 router.get('/merge', async (req, res) => {
@@ -29,7 +29,7 @@ router.get('/merge', async (req, res) => {
     const branchName = req.query.branch;
     const baseBranchName = req.query.baseBranch;
     const {repoOwner, repoName} = getOwnerAndRepoFromUrl(repoUrl);
-    const mergeResult = await githubApi.mergeBranches(repoOwner, repoName, branchName, baseBranchName);
+    const mergeResult = await githubApi.mergeBranches(repoOwner, repoName, baseBranchName, branchName);
     res.json(mergeResult);
 });
 function validateRequiredParams(req, res, requiredParamNames) {
