@@ -23,9 +23,9 @@ Set: `Permissions -> Repository permissions -> Contents` to `Read-only`
 
 ## Usage
 
-To quickly test the project, try ready-to-use docker [image](https://hub.docker.com/repository/docker/windranger/branch-comparer):
+Running ready-to-use docker [image](https://hub.docker.com/repository/docker/windranger/branch-comparer):
 ```bash
-docker run -e GITHUB_TOKEN=<your_token> -p 3000:3000  windranger/branch-comparer:v2.0.1
+docker run -e GITHUB_TOKEN=<your_token> -p 3000:3000  windranger/branch-comparer:v2.1.0
 ```
 
 You can find `curl` test queries below.
@@ -85,6 +85,8 @@ Result:
 ```
 We can tell from the result that the `dev` is more recent than `master` and ahead of it commits with 3 commits, this means if we want to make them equal, we should update `master` merging `dev` into it.
 
+You can use request parameter `locally=true` to merge branches locally and push back to the remote. GitHub API won't be used in this case.  
+This option can be useful, because GitHub always creates a commit on merge, so branches never become equal.
 ### Merge branches
 
 Request to merge `dev` into `master` branch
